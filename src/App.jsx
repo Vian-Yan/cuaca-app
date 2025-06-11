@@ -12,6 +12,12 @@ function App() {
   const [input, setInput] = useState('');
   const [term, setTerm] = useState('lombok');
   const [data, setData] = useState(null);
+  const [isSpin, setIsSpin] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (localStorage.theme === 'dark') return true;
+    if (localStorage.theme === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   const handleSubmit = () => {
     if (input.trim() !== '') {
@@ -23,6 +29,14 @@ function App() {
     if (e.key === 'Enter') {
       handleSubmit();
     }
+  };
+
+  const handleSpin = () => {
+    setDarkMode((dark) => !dark);
+    setIsSpin(true);
+    setTimeout(() => {
+      setIsSpin(false);
+    }, 1000);
   };
   const containerVariants = {
     initial: {},
@@ -62,13 +76,24 @@ function App() {
         console.error('Fetch error:', error);
       }
     };
+
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.theme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.theme = 'light';
+    }
+
     fetchData();
-  }, [term]);
+  }, [term, darkMode]);
 
   return (
     <>
-      <div className="h-screen flex-col items-center justify-center border bg-gray-500 p-4 w-full">
-        <h1 className="text-white text-xl font-bold flex justify-center items-center mb-2">
+      <div className="h-screen flex-col items-center justify-center  bg-slate-100 px-4 py-2 w-full dark:bg-slate-500 ">
+        <h1
+          className={`${darkMode ? 'text-slate-100' : 'text-slate-600'} text-xl font-bold flex justify-center mb-2`}
+        >
           <Typewriter
             words={[
               'Cuaca Hari Ini',
@@ -85,8 +110,29 @@ function App() {
         </h1>
 
         <div
-          className={`max-w-[450px]  mx-auto  flex flex-col items-center justify-center p-4 rounded-lg shadow-lg w-full ${data && data.weather[0].icon.slice(-1) === 'n' ? 'bg-night' : 'bg-day'}`}
+          className={`relative max-w-[450px]  mx-auto  flex flex-col items-center justify-center p-4 rounded-lg shadow-lg w-full ${data && data.weather[0].icon.slice(-1) === 'n' ? 'bg-night' : 'bg-day'}`}
         >
+          <div className="absolute -top-4 -right-2 p-1  duration-100 ">
+            <button className="cursor-pointer" onClick={handleSpin}>
+              {darkMode ? (
+                <img
+                  src="https://img.icons8.com/?size=100&id=lJmfbU13So9l&format=png&color=000000"
+                  alt=""
+                  className={`${isSpin ? 'animate-spin' : ''}`}
+                  width={40}
+                  height={40}
+                />
+              ) : (
+                <img
+                  src="https://img.icons8.com/?size=100&id=H3yHeysB1dxv&format=png&color=000000"
+                  alt=""
+                  className={`${isSpin ? 'animate-spin' : ''}`}
+                  width={40}
+                  height={40}
+                />
+              )}
+            </button>
+          </div>
           <div className="flex  justify-center items-center  gap-2 w-full mt-4">
             <input
               type="text"
@@ -162,34 +208,34 @@ function App() {
           >
             <div className="absolute top-0 bottom-0 left-0 right-0 bg-[#001026] opacity-10 w-full rounded-full"></div>
 
-            <div className="flex z-10 text-white gap-1 items-center">
-              <img src={rain} className="opacity-100 w-6" alt="" />
+            <div className="flex z-10 text-white items-center text-lg gap-0.5">
+              <img src={rain} className="opacity-100 w-8" alt="" />
               <span>{data && data.main.humidity}%</span>
             </div>
 
-            <div className="flex z-10 text-white gap-1 items-center">
-              <img src={humidity} className="opacity-100 w-6" alt="" />
+            <div className="flex z-10 text-white gap-0.5 items-center text-lg">
+              <img src={humidity} className="opacity-100 w-8" alt="" />
               <span>{data && data.clouds.all}%</span>
             </div>
 
-            <div className="flex z-10 text-white gap-1 items-center">
-              <img src={wind} className="opacity-100 w-6" alt="" />
+            <div className="flex z-10 text-white gap-0.5 items-center text-lg">
+              <img src={wind} className="opacity-100 w-8" alt="" />
               <span>{data && data.wind.speed} km/h</span>
             </div>
           </motion.div>
-          <div className=" flex justify-center items-center mt-3  flex-col rounded-xl ">
-            <p className="text-sm text-slate-100">Follow my social media</p>
+          <div className=" flex justify-center items-center mt-2  flex-col text-md">
+            <p className=" text-slate-100">Follow my social media</p>
             <div className="flex justify-around w-full p-0.5">
               <a href="https://www.instagram.com/viannv___/">
                 <img
-                  className="w-8 h-8"
+                  className="w-9 h-9"
                   src="https://img.icons8.com/?size=100&id=9R1sV3QvY18K&format=png&color=000000"
                   alt=""
                 />
               </a>
               <a href="https://t.me/Aowkaowkaks">
                 <img
-                  className="w-8 h-8"
+                  className="w-9 h-9"
                   src="https://img.icons8.com/?size=100&id=32292&format=png&color=000000"
                   alt=""
                 />
@@ -203,7 +249,7 @@ function App() {
               <span className="text-red-500 animate-pulse">❤️</span> oleh{' '}
               <span className="text-white">Vian</span>
             </p>
-            <p className="text-gray-500 text-xs sm:text-sm text-center sm:text-right">
+            <p className="text-gray-500 text-sm sm:text-sm text-center sm:text-right">
               Powered by OpenWeatherMap
             </p>
           </footer>

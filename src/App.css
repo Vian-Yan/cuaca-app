@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-
+@custom-variant dark (&:where(.dark, .dark *));
 /* CSS custom untuk background */
 .bg-day {
   background: linear-gradient(167deg, #29b2dd 0%, #3ad 47.38%, #2dc8ea 100%);
