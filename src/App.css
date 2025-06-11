@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+/* CSS custom untuk background */
+.bg-day {
+  background: linear-gradient(167deg, #29b2dd 0%, #3ad 47.38%, #2dc8ea 100%);
+}
+.bg-night {
+  background: linear-gradient(167deg, #08244f 0%, #134cb5 47.38%, #0b42ab 100%);
+}
