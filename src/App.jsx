@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
-
-import './App.css';
 import { Typewriter } from 'react-simple-typewriter';
+import './App.css';
+
+import rain from './assets/rain.png';
+import humidity from './assets/humidity.png';
+import wind from './assets/wind.png';
 
 function App() {
   const [input, setInput] = useState('');
@@ -35,6 +38,14 @@ function App() {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.6 },
   };
+
+  const images = import.meta.glob('./assets/*.png', {
+    eager: true,
+    import: 'default',
+  });
+
+  const iconName = data?.weather[0].icon;
+  const iconPatch = images[`./assets/${iconName}.png`];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,11 +119,7 @@ function App() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <img
-                src={`/src/assets/${data.weather[0].icon}.png`}
-                alt="Weather Icon"
-                className="w-24 h-24"
-              />
+              <img src={iconPatch} alt="Weather Icon" className="w-24 h-24" />
               <p className="text-4xl text-slate-100">
                 {data ? `${data.main.temp}°C` : 'Loading...'}
               </p>
@@ -156,29 +163,17 @@ function App() {
             <div className="absolute top-0 bottom-0 left-0 right-0 bg-[#001026] opacity-10 w-full rounded-full"></div>
 
             <div className="flex z-10 text-white gap-1 items-center">
-              <img
-                src="../src/assets/rain.png"
-                className="opacity-100 w-6"
-                alt=""
-              />
+              <img src={rain} className="opacity-100 w-6" alt="" />
               <span>{data && data.main.humidity}%</span>
             </div>
 
             <div className="flex z-10 text-white gap-1 items-center">
-              <img
-                src="../src/assets/humidity.png"
-                className="opacity-100 w-6"
-                alt=""
-              />
+              <img src={humidity} className="opacity-100 w-6" alt="" />
               <span>{data && data.clouds.all}%</span>
             </div>
 
             <div className="flex z-10 text-white gap-1 items-center">
-              <img
-                src="../src/assets/wind.png"
-                className="opacity-100 w-6"
-                alt=""
-              />
+              <img src={wind} className="opacity-100 w-6" alt="" />
               <span>{data && data.wind.speed} km/h</span>
             </div>
           </motion.div>
